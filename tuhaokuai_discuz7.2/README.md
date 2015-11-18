@@ -1,6 +1,6 @@
 # 图好快  discuz7.2 简体中文 utf8
 
-## DISCUZ 7.X 使用方法：
+## 使用方法：
 
 1. 下载`tuhaokuai_discuz7.2`到您的网站`plugins`下并改名为`tuhaokuai`
 
