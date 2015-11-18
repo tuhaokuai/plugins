@@ -1,16 +1,4 @@
-# 图好快 图片加速插件 
-
-即将支持以下系统
-
-discuz   discuzx   wordpress drupal 
-
-
-请先联系图好快官方 http://www.tuhaokuai.com  以开通服务
-
-临时试用  http://www.tuhaokuai.com/product/site/try
-
-
-目前已完成discuz7.2 简体中文 utf8。
+# 图好快  discuz7.2 简体中文 utf8
 
 ## DISCUZ 7.X 使用方法：
 
