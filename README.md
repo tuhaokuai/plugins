@@ -2,6 +2,8 @@
 
 全站加速插件
 
+开通请联系官方 http://www.tuhaokuai.com
+
 
 目前已完成discuz7.2 简单中文 utf8。
 
