@@ -2,7 +2,7 @@
 
 ## DISCUZ 7.X 使用方法：
 
-1. 下载`tuhaokuai_discuz7.2`到您的网站plugins下并改名为`tuhaokuai`
+1. 下载`tuhaokuai_discuz7.2`到您的网站`plugins`下并改名为`tuhaokuai`
 
 2. 进入后台->插件->导入 选择导入 `plugins/tuhaokuai/discuz_plugin_tuhaokuai.xml`  提交。
 
