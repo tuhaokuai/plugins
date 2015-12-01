@@ -1,27 +1,32 @@
-# 图好快 图片加速插件 
-
-即将支持以下系统
-
-discuz   discuzx   wordpress drupal 
+# 图好快 加速插件 
 
 
-请先联系图好快官方 http://www.tuhaokuai.com  以开通服务
 
-临时试用  http://www.tuhaokuai.com/product/site/try
+已完成插件
 
+PrestaShop-1.6.1.2
 
-目前已完成discuz7.2 简体中文 utf8。
+ecshop2.7.3
 
-## DISCUZ 7.X 使用方法：
+tuhaokuai_discuz7.2
 
-1. 下载`tuhaokuai_discuz7.2`到您的网站`plugins`下并改名为`tuhaokuai`
-
-2. 进入后台->插件->导入 选择导入 `plugins/tuhaokuai/discuz_plugin_tuhaokuai.xml`  提交。
-
-3. 在插件列表中启用`tuhaokuai`这个插件。
-
-功能说明：
-
-目前仅对帖子中的图片提供加速功能,以及发帖回帖人的头像为静态地址(如/data...jpg png gif，不支持以.php生成的地址)
+tuhaokuai_wordpress-4.3.1
 
 
+
+正在测试插件
+
+tuhaokuai_discuz!3.2
+
+
+
+
+如果您的系统不在本插件列表内
+
+可尝试使用通用版本代码,`tuhaokuai.php`为PHP通用代码
+
+需要您根据系统适当的修改部分代码。
+
+如有疑问请联系 `http://www.tuhaokuai.com` 
+
+客服QQ `3071906646`
