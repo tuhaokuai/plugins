@@ -8,78 +8,22 @@ Author:  枫雪信息科技有限公司
 Version: 1.0
 Author URI: http://tuhaokuai.com
 */
-class tuhaokuai{
+class tuhaokuai extends tuhaokuai_dev{
 	public $content;
-	public $url = "http://s1.tuhaokuai.com";
+	 
 	function __construct(){
-		//后台菜单
-		add_action('admin_menu',array($this, 'add_menu' ));
+		 
 		if(strpos($_SERVER['REQUEST_URI'],'/wp-admin/') !== false) return;
 		//更改 CSS JS 链接地址
-		add_action('style_loader_src',  array($this, 'cdn_link')    );
-		add_action('script_loader_src',  array($this, 'cdn_link')    );
+		add_action('style_loader_src',  array($this, 'wp_link')    );
+		add_action('script_loader_src',  array($this, 'wp_link')    );
 		//更改内容中的图片地址
-		add_filter('the_content',array($this,'content') );
+		add_filter('the_content',array($this,'wp_content') );
 		add_action('init',array($this,'wp_header') );
 		add_action('wp_footer',array($this,'wp_footer') );
 		
 		
-	}
-	/*********后台菜单******************/
-	function add_menu(){
-		global $aad_settings;
-		//$aad_settings = add_menu_page(__('CDNZIP', 'aad'), __('CDNZIP Setting', 'aad'), 'manage_options',dirname(__FILE__) ,array($this,'add_menu_view'),false, 99);
-	}
-	 
-	
-	function add_menu_view(){
-		return;
-		if($_POST){
-			$key = array('cdnzip_client_id','cdnzip_client_secret');
-			foreach($key as $k){
-				$value = trim($_POST[$k]);
-				if(!$value) continue;
-				if(get_option($k)){
-					update_option($k , $value);
-				}else{
-					add_option($k , $value);
-				}
-			}
-			$msg = __('Save Succcess','add');
-		}
-		 echo '  
-		<div class="wrap">
-	
-	        <h2>'. __('CDNZIP Setting', 'aad') .'</h2>
-			<h3>'.__('please visit http://www.cdnzip.com  get client_id/client_secret code','add').'</h3>
-	        <form id="aad-form" method="post">
-		        <table class="form-table">
-				<tbody>
-					<tr>
-						<th scope="row"><label for="client_id">'.__('client_id').'</label></th>
-						<td><input type="text" class="regular-text" value="'.get_option('cdnzip_client_id').'" id="client_id" name="cdnzip_client_id"></td>
-					<tr>
-		 			<tr>
-		 				<th scope="row"><label for="client_secret">'.__('client_secret').'</label></th>
-						<td><input type="text" class="regular-text" value="'.get_option('cdnzip_client_secret').'" id="client_secret" name="cdnzip_client_secret"></td>
-					</tr>
-					<tr>
-						<th scope="row"><input type="submit" name="aad-submit" id="aad_submit" class="button-primary" value="'. __('Save', 'aad').'"/></th>
-						<td>  </td>
-					</tr>
-				</tbody>
-				</table>
-				'.$msg.'
-			</form>
-        
-
-       	 
-
-    	</div>';
-    
-	}
-	
-	
+	} 
 	/*********图片链接换成CDN***********/
 	function wp_header(){
 		ob_start();
@@ -95,68 +39,168 @@ class tuhaokuai{
     
 	 
 	
-	function content($content){  
-		$r = $this->image($content);
-		if(!$r) return $content;
-		foreach($r as $v){
-			$content = str_replace($v,$this->link($v) , $content);
-		}
-		return $content;
+	function wp_content($content){  
+		return $this->output($content);
 	}
 	
-	function cdn_link($src){
+	function wp_link($src){
 		if( strpos( $src, 'ver=' ) )
 			$src = remove_query_arg( 'ver', $src );
-		return $this->link($src);
+		return $this->linkNew($src);
 	}
-	/**
-	 * 
-	 * create new link
-	 * @param $url
-	 */
-	function link($url){
-		$ext = substr($url,strrpos($url,'.'));
-		
-		$arr = [
-			'jpg','png','jpeg','bmp','gif','js','css'
-		];
-		 
-		$host = $_SERVER['HTTP_HOST'];
-		$a = 'http://'.$host;
-		$b = 'https://'.$host;
-		if(strpos($url,$a) === false){
-			return $this->url.'/'.substr($a,7).'/'.$url;
-		}else{
-			return str_replace($a,$this->url.'/'.$host,$url);
-		}
-		if(strpos($url,$b) === false){
-			return $this->url.'/'.substr($b,8).'/'.$url;
-		}else{
-			return str_replace($a,$this->url.'/'.$host,$url);
-		}
-		return  $url;
-	}
-	
-	/**
-	*  get image url
-	*/
-	function image($content){ 
-		$preg = "/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i";
-		preg_match_all($preg,$content,$out);
-		$out1 = $out[1];
-		if($out1){
-			$i = 0;
-			foreach($out1 as $v){
-				$new_img[] = $v.$out[2][$i];
-				$i++;
-			}
-			
-		}
-		return $new_img;  
-	} 
-
+	 
 }
 
 $cdnzip =  new tuhaokuai; 
+
+
+class tuhaokuai_dev {
+
+    public $url = "http://s1.tuhaokuai.com";
+    public $useJsLink = true;
+    public $useCssLink = true;
+    public $useImageLink = true;
+    public $useHrefLink = true;
+
+    public $https = false;
+    static $NoRepeat = array();
+    public $allowExt = array(
+            'jpg','png','jpeg','bmp','gif','js','css'
+        );
+    public $allowDomain = array(
+            'googleapis.com'
+    );
+    function output($string){
+         if($this->useImageLink === true){
+             $string = $this->replace('image',$string);
+         }
+         if($this->useHrefLink === true){
+             $string = $this->replace('href',$string,['jpg','jpeg','png','gif']);
+         }
+         if($this->useCssLink === true){
+             $string = $this->replace('linkStyle',$string);
+         }
+         if($this->useJsLink === true){
+             $string = $this->replace('script',$string);
+         }
+         return $string;
+    }
+    
+
+    function replace($type="image",$string,$in = false){
+         $ar = $this->$type($string);
+         if(!$ar){
+            return $string;
+         }
+          
+         foreach($ar as $v){
+            if(strpos($v,$this->url) === false){
+                if(is_array($in)){
+                    $ext  = substr($v,strrpos($v,'.')+1);
+                    if(!in_array($ext,$in)){
+                        continue;
+                    }
+
+                } 
+               // echo $v."\n";
+               // echo $this->linkNew($v)."\n";
+
+                $string = str_replace($v,$this->linkNew($v),$string);
+            }
+         } 
+         return $string; 
+    }
+    
+    /**
+     * 
+     * create new link
+     * @param $url
+     */
+    function linkNew($url){
+        $key = 'tuhaokuailink'.md5($url);
+        if(isset(static::$NoRepeat[$key])){
+            return  static::$NoRepeat[$key];
+        }
+        $ext = substr($url,strrpos($url,'.')+1); 
+        
+        if(!in_array($ext,$this->allowExt) && !$this->allowDomain($url)){
+            static::$NoRepeat[$key] = $url;
+            return  $url;
+        }
+
+        $host = $_SERVER['HTTP_HOST'];
+        $top = 'http:';
+        if($this->https === true){
+            $top = 'https:';
+        } 
+
+        if(substr($url,0,2)=='//'){
+            $url = "/".$host."/http:".$url;
+        }else if(substr($url,0,1)=='/'){
+            $url = "/".$host.$url;
+        }
+
+        $eurl  = $url;
+        if(strpos($eurl,'http://')!==false || strpos($eurl,'https://')!==false){
+            
+            $eurl = str_replace('http://','',$eurl);
+            $eurl = str_replace('https://','',$eurl);
+
+            $hostCheck = substr($eurl,0,strpos($eurl,'/'));
+            if($hostCheck == $host){
+                $url = "/".$eurl;
+            }else{
+                $url = "/".$host."/".$url;
+            }
+
+        } 
+
+       
+        $url = str_replace('//', '/', $url);
+        $url = $this->url.$url;
+        static::$NoRepeat[$key] = $url;
+        return  $url;
+    }
+    
+    function allowDomain($url){
+        foreach($this->allowDomain as $v){
+            if(strpos($url,$v)!==false){
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+    *  get image url
+    */
+    function image($content,$tag = 'src'){ 
+        $preg = "/<\s*img\s+[^>]*?$tag\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i";
+        preg_match_all($preg,$content,$out);
+        return $out[2];  
+    }
+
+    function href($content){ 
+        $preg = "/<\s*a\s+[^>]*?href\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i";
+        preg_match_all($preg,$content,$out);
+        return $out[2];  
+    }
+
+    function linkStyle($content){ 
+        $preg = "/<\s*link\s+[^>]*?href\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i";
+        preg_match_all($preg,$content,$out);
+        return $out[2];  
+    }
+
+    function script($content){ 
+        $preg = "/<\s*script\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i";
+        preg_match_all($preg,$content,$out);
+        return $out[2];  
+    }
+    
+    
+     
+
+}
+
 
  
