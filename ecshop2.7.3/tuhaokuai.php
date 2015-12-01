@@ -2,7 +2,7 @@
 /**
  * 图好快提供的全站图片加速服务
  *
- * @since ECSHOP  2.7.3
+ * @since PHP 通用
  * @link http://www.tuhaokuai.com
  * @copyright 上海枫雪信息科技有限公司 
  * 
@@ -62,9 +62,6 @@ class tuhaokuai {
                     }
 
                 } 
-               // echo $v."\n";
-               // echo $this->linkNew($v)."\n";
-
                 $string = str_replace($v,$this->linkNew($v),$string);
             }
          } 
@@ -93,13 +90,6 @@ class tuhaokuai {
         if($this->https === true){
             $top = 'https:';
         } 
-
-        if(substr($url,0,2)=='//'){
-            $url = "/".$host."/http:".$url;
-        }else if(substr($url,0,1)=='/'){
-            $url = "/".$host.$url;
-        }
-
         $eurl  = $url;
         if(strpos($eurl,'http://')!==false || strpos($eurl,'https://')!==false){
             
@@ -109,13 +99,16 @@ class tuhaokuai {
             $hostCheck = substr($eurl,0,strpos($eurl,'/'));
             if($hostCheck == $host){
                 $url = "/".$eurl;
-            }else{
-                $url = "/".$host."/".$url;
             }
 
         } 
-
-       
+        if(substr($url,0,2)=='//'){
+            $url = "/".$host."/http:".$url;
+        }else if(substr($url,0,1)=='/'){
+            $url = "/".$host.$url;
+        }else{
+                $url = "/".$host."/".$url;
+        }
         $url = str_replace('//', '/', $url);
         $url = $this->url.$url;
         static::$NoRepeat[$key] = $url;

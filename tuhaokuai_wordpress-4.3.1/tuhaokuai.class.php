@@ -11,7 +11,7 @@
 
 
 
-class tuhaokuai {
+class tuhaokuai_dev {
 
     public $url = "http://s1.tuhaokuai.com";
     public $useJsLink = true;

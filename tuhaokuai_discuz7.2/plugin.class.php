@@ -15,8 +15,10 @@ if($_SERVER['SCRIPT_NAME'] == '/admincp.php'){
 	return;
 }
 
+include dirname(__FILE__)."/tuhaokuai.php";
+
  
-class plugin_tuhaokuai {
+class plugin_tuhaokuai extends tuhaokuai {
 	public $url = "http://s1.tuhaokuai.com";
 	 
 	function viewthread_postheader_output(){
@@ -29,12 +31,12 @@ class plugin_tuhaokuai {
 				$arr1 = $this->image($c,'file');
 				if($arr){
 					foreach ($arr as $ui){
-						$c = str_replace($ui,$this->link($ui),$c);
+						$c = str_replace($ui,$this->linkNew($ui),$c);
 					}
 				}
 				if($arr1){
 					foreach ($arr1 as $ui){
-						$c = str_replace($ui,$this->link($ui),$c);
+						$c = str_replace($ui,$this->linkNew($ui),$c);
 					}
 				}
 				$postlist[$k]['message'] = $v['message'] = $c;
@@ -58,45 +60,7 @@ class plugin_tuhaokuai {
 	}
 	
 	
-	/**
-	 * 
-	 * create new link
-	 * @param $url
-	 */
-	function link($url){
-		
-		$ext = substr($url,strrpos($url,'.'));
-		
-		$arr = [
-			'jpg','png','jpeg','bmp','gif','js','css'
-		];
-		 
-		$host = $_SERVER['HTTP_HOST'];
-		$a = 'http://'.$host;
-		$b = 'https://'.$host;
-		if(strpos($url,$a) === false){
-			return $this->url.'/'.substr($a,7).'/'.$url;
-		}else{
-			return str_replace($a,$this->url.'/'.$host,$url);
-		}
-		if(strpos($url,$b) === false){
-			return $this->url.'/'.substr($b,8).'/'.$url;
-		}else{
-			return str_replace($a,$this->url.'/'.$host,$url);
-		}
-		
-		return  $url;
-	}
-	
-	/**
-	*  get image url
-	*/
-	function image($content,$tag = 'src'){ 
-		$preg = "/<\s*img\s+[^>]*?$tag\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i";
-		preg_match_all($preg,$content,$out);
-		return $out[2];  
-	}
-	
+	 
      
 
 }
