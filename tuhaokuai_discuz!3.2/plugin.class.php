@@ -66,9 +66,9 @@ class plugin_tuhaokuai {
 		
 		$ext = substr($url,strrpos($url,'.'));
 		
-		$arr = [
+		$arr = array(
 			'jpg','png','jpeg','bmp','gif','js','css'
-		];
+		);
 		 
 		$host = $_SERVER['HTTP_HOST'];
 		$a = 'http://'.$host;

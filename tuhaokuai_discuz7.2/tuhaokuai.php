@@ -35,7 +35,7 @@ class tuhaokuai {
              $string = $this->replace('image',$string);
          }
          if($this->useHrefLink === true){
-             $string = $this->replace('href',$string,['jpg','jpeg','png','gif']);
+             $string = $this->replace('href',$string,array('jpg','jpeg','png','gif'));
          }
          if($this->useCssLink === true){
              $string = $this->replace('linkStyle',$string);
