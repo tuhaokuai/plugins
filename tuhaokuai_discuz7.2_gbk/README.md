@@ -1,8 +1,10 @@
-# 图好快  discuz7.2 简体中文 utf8
+# 图好快  discuz7.2 简体中文 GBK
+
+试用3天，以后请联系图好快 `http://www.tuhaokuai.com` 客服QQ `3071906646`
 
 ## 使用方法：
 
-1. 下载`tuhaokuai_discuz7.2`到您的网站`plugins`下并改名为`tuhaokuai`
+1. 下载`tuhaokuai_discuz7.2_gbk`到您的网站`plugins`下并改名为`tuhaokuai`
 
 2. 进入后台->插件->导入 选择导入 `plugins/tuhaokuai/discuz_plugin_tuhaokuai.xml`  提交。
 

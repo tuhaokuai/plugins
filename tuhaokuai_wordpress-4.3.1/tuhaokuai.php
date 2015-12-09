@@ -2,9 +2,9 @@
 defined( 'ABSPATH' )  or exit; 
 include dirname(__FILE__)."/tuhaokuai.class.php";
 /*
-Plugin Name: 图好快-全站加速
+Plugin Name: 图好快全站加速
 Plugin URI: http://www.tuhaokuai.com
-Description: 对网站JS CSS 图片等进行加速
+Description: 试用3天
 Author:  枫雪信息科技有限公司
 Version: 1.0
 Author URI: http://tuhaokuai.com
