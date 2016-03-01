@@ -342,12 +342,13 @@ class Smarty_Custom_Template extends Smarty_Internal_Template
 
 class tuhaokuai {
     public $url = "http://s1.tuhaokuai.com";
-    public $useJsLink = false;
+    public $useJsLink = true;
     public $useCssLink = true;
     public $useImageLink = true;
     public $useHrefLink = false;
     public $https = false;
     static $NoRepeat = array();
+    static $only = array();
     public $allowExt = array(
             'jpg','png','jpeg','bmp','gif','js','css'
         );
@@ -378,7 +379,7 @@ class tuhaokuai {
          if(!$ar){
             return $string;
          }
-          
+        
          foreach($ar as $v){
             if(strpos($v,$this->url) === false){
                 if(is_array($in)){
@@ -387,7 +388,10 @@ class tuhaokuai {
                         continue;
                     }
                 } 
-                $string = str_replace($v,$this->linkNew($v),$string);
+                if(!static::$only[md5($v)]){
+                    $string = str_replace($v,$this->linkNew($v),$string);
+                    static::$only[md5($v)] = true;
+                }
             }
          } 
          return $string; 
@@ -399,6 +403,8 @@ class tuhaokuai {
      * @param $url
      */
     function linkNew($url){ 
+
+
         if(strpos($url,$this->url)!==false){
             return $url;
         }
@@ -422,12 +428,14 @@ class tuhaokuai {
         // http://yourdomain/a/b/c.jpg
         // return  http://s1.tuhaokuai.com/yourdomain/a/b/c.jpg
         if(strpos($url,$top.'//'.$host)!==false){ 
-            $url = $this->url.substr($url,strlen($top."//"));
+            $url = $this->url.'/'.substr($url,strlen($top."//"));
             static::$NoRepeat[$key] = $url;
             return  $url;
         }
+
         // http://notyourdomain/a/b/c.jpg
         // return  http://s1.tuhaokuai.com/yourdomain/http://notyourdomain/a/b/c.jpg
+        
         if(substr($url,0,7)=='http://'){
             $url = "/".$host."/".$url;
             $url = $this->url.$url;
@@ -441,6 +449,7 @@ class tuhaokuai {
             static::$NoRepeat[$key] = $url;
             return  $url;
         }
+
 
         if(substr($url,0,1)=='/'){
             $url = "/".$host.$url;
