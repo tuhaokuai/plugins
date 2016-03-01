@@ -7,18 +7,18 @@
  * @copyright 上海枫雪信息科技有限公司 
  * 
  */
- 
-
-
-
+/*
+$tu = new tuhaokuai;
+echo $tu->linkNew('/baidu.jpg')."<br>";
+echo $tu->linkNew('http://www/baidu.jpg')."<br>";
+echo $tu->linkNew('http://a/baidu.jpg')."<br>";
+*/
 class tuhaokuai_dev {
-
     public $url = "http://s1.tuhaokuai.com";
-    public $useJsLink = true;
+    public $useJsLink = false;
     public $useCssLink = true;
     public $useImageLink = true;
-    public $useHrefLink = true;
-
+    public $useHrefLink = false;
     public $https = false;
     static $NoRepeat = array();
     public $allowExt = array(
@@ -46,7 +46,6 @@ class tuhaokuai_dev {
          return $string;
     }
     
-
     function replace($type="image",$string,$in = false){
          $ar = $this->$type($string);
          if(!$ar){
@@ -60,7 +59,6 @@ class tuhaokuai_dev {
                     if(!in_array($ext,$in)){
                         continue;
                     }
-
                 } 
                 $string = str_replace($v,$this->linkNew($v),$string);
             }
@@ -73,7 +71,10 @@ class tuhaokuai_dev {
      * create new link
      * @param $url
      */
-    function linkNew($url){
+    function linkNew($url){ 
+        if(strpos($url,$this->url)!==false){
+            return $url;
+        }
         $key = 'tuhaokuailink'.md5($url);
         if(isset(static::$NoRepeat[$key])){
             return  static::$NoRepeat[$key];
@@ -84,35 +85,51 @@ class tuhaokuai_dev {
             static::$NoRepeat[$key] = $url;
             return  $url;
         }
-
         $host = $_SERVER['HTTP_HOST'];
         $top = 'http:';
         if($this->https === true){
             $top = 'https:';
-        } 
-        $eurl  = $url;
-        if(strpos($eurl,'http://')!==false || strpos($eurl,'https://')!==false){
-            
-            $eurl = str_replace('http://','',$eurl);
-            $eurl = str_replace('https://','',$eurl);
+        }  
 
-            $hostCheck = substr($eurl,0,strpos($eurl,'/'));
-            if($hostCheck == $host){
-                $url = "/".$eurl;
-            }
+        //对URL分析
+        // http://yourdomain/a/b/c.jpg
+        // return  http://s1.tuhaokuai.com/yourdomain/a/b/c.jpg
+        if(strpos($url,$top.'//'.$host)!==false){ 
+            $url = $this->url.substr($url,strlen($top."//"));
+            static::$NoRepeat[$key] = $url;
+            return  $url;
+        }
+        // http://notyourdomain/a/b/c.jpg
+        // return  http://s1.tuhaokuai.com/yourdomain/http://notyourdomain/a/b/c.jpg
+        if(substr($url,0,7)=='http://'){
+            $url = "/".$host."/".$url;
+            $url = $this->url.$url;
+            static::$NoRepeat[$key] = $url;
+            return  $url;
+        }
 
-        } 
         if(substr($url,0,2)=='//'){
             $url = "/".$host."/http:".$url;
-        }else if(substr($url,0,1)=='/'){
-            $url = "/".$host.$url;
-        }else{
-                $url = "/".$host."/".$url;
+            $url = $this->url.$url;
+            static::$NoRepeat[$key] = $url;
+            return  $url;
         }
-        $url = str_replace('//', '/', $url);
-        $url = $this->url.$url;
-        static::$NoRepeat[$key] = $url;
-        return  $url;
+
+        if(substr($url,0,1)=='/'){
+            $url = "/".$host.$url;
+            $url = $this->url.$url;
+            static::$NoRepeat[$key] = $url;
+            return  $url;
+
+        }
+ 
+        
+        return $url;
+
+
+
+        
+        
     }
     
     function allowDomain($url){
@@ -131,19 +148,16 @@ class tuhaokuai_dev {
         preg_match_all($preg,$content,$out);
         return $out[2];  
     }
-
     function href($content){ 
         $preg = "/<\s*a\s+[^>]*?href\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i";
         preg_match_all($preg,$content,$out);
         return $out[2];  
     }
-
     function linkStyle($content){ 
         $preg = "/<\s*link\s+[^>]*?href\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i";
         preg_match_all($preg,$content,$out);
         return $out[2];  
     }
-
     function script($content){ 
         $preg = "/<\s*script\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i";
         preg_match_all($preg,$content,$out);
@@ -152,10 +166,4 @@ class tuhaokuai_dev {
     
     
      
-
 }
-
-
-
- 
-
